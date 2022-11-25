@@ -7,6 +7,7 @@ import api from "../../../api";
 import SearchStatus from "../../ui/searchStatus";
 import UserTable from "../../ui/usersTable";
 import { paginate } from "../../../utils/paginate";
+import { useUser } from "../../../hooks/useUsers";
 
 const UsersListPage = () => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -14,15 +15,13 @@ const UsersListPage = () => {
     const [selectedProf, setSelectedProf] = useState();
     const [sortBy, setSortBy] = useState({ path: "name", order: "asc" });
     const pageSize = 8;
-    const [users, setUsers] = useState();
+    const { users } = useUser();
     const [searchQuery, setSearchQuery] = useState("");
-    useEffect(() => {
-        api.users.fetchAll().then((data) => setUsers(data));
-    }, []);
     const handleDelete = (userId) => {
-        setUsers((prevState) =>
-            prevState.filter((line) => line._id !== userId)
-        );
+        // setUsers((prevState) =>
+        //     prevState.filter((line) => line._id !== userId)
+        // );
+        console.log(userId);
     };
     const handleToggleBookMark = (id) => {
         const newArray = users.map((user) => {
@@ -31,7 +30,8 @@ const UsersListPage = () => {
             }
             return user;
         });
-        setUsers(newArray);
+        // setUsers(newArray);
+        console.log(newArray);
     };
 
     useEffect(() => {
