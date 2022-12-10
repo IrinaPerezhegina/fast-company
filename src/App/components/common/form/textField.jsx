@@ -25,6 +25,7 @@ const TextField = ({ label, type, name, value, onChange, error }) => {
                     onChange={handleChange}
                     className={getInputClasses()}
                 />
+
                 {type === "password" && (
                     <button
                         className="btn btn-outline-secondary"
@@ -38,6 +39,7 @@ const TextField = ({ label, type, name, value, onChange, error }) => {
                         ></i>
                     </button>
                 )}
+                {error && <div className="invalid-feedback">{error}</div>}
             </div>
         </div>
     );

@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-
 import BookMark from "../common/bookmark";
 import QualitiesList from "./qualities/qualitiesList";
 import Table from "../common/table";
@@ -25,7 +24,7 @@ const UserTable = ({
         },
         qualities: {
             name: "Качества",
-            component: (user) => <QualitiesList id={user._id} />
+            component: (user) => <QualitiesList qualities={user.qualities} />
         },
         professions: {
             name: "Профессия",
