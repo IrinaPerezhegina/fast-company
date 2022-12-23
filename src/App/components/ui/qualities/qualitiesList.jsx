@@ -4,14 +4,13 @@ import Quality from "./qualitie";
 import { useQualities } from "../../../hooks/useQuality";
 
 const QualitiesList = ({ qualities }) => {
-    console.log(qualities);
     const { isLoading } = useQualities();
     if (isLoading) return "Loading...";
     return (
         <>
-            {qualities.map((qual) => (
-                <Quality key={qual} id={qual} />
-            ))}
+            {qualities
+                ? qualities.map((qual) => <Quality key={qual} id={qual} />)
+                : ""}
         </>
     );
 };
