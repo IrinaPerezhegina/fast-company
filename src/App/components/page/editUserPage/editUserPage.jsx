@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-// import { useHistory, useParams } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { validator } from "../../../utils/validator";
 import TextField from "../../common/form/textField";
 import SelectField from "../../common/form/selectField";
@@ -11,27 +11,16 @@ import { useQualities } from "../../../hooks/useQuality";
 import { useAuth } from "../../../hooks/useAuth";
 
 const EditUserPage = () => {
-    // const { userId } = useParams();
-    // const history = useHistory();
+    const history = useHistory();
     const [isLoading, setIsLoading] = useState(true);
-    // const [data, setData] = useState({
-    //     name: "",
-    //     email: "",
-    //     profession: "",
-    //     sex: "male",
-    //     qualities: []
-    // });
-    const { currentUser, updateUser } = useAuth();
-    const [data, setData] = useState(currentUser);
-    const { professions } = useProfessions();
-    const { qualities } = useQualities();
+
+    const { currentUser, updateUserData } = useAuth();
+
+    const [data, setData] = useState();
+    const { professions, isLoading: professionLoading } = useProfessions();
+    const { qualities, isLoading: qualitiesLoading } = useQualities();
     const [errors, setErrors] = useState({});
 
-    useEffect(() => {
-        if (professions && qualities) {
-            setIsLoading(false);
-        }
-    }, []);
     const professionsList = Object.keys(professions).map((professionName) => ({
         label: professions[professionName].name,
         value: professions[professionName]._id
@@ -42,39 +31,47 @@ const EditUserPage = () => {
         color: qualities[optionName].color
     }));
 
-    const getQualities = (elements) => {
+    function getQualitiesListByIds(qualitiesIds) {
         const qualitiesArray = [];
-        if (elements) {
-            for (const elem of elements) {
-                for (const quality in qualities) {
-                    if (elem === qualities[quality]._id) {
-                        qualitiesArray.push({
-                            value: qualities[quality]._id,
-                            label: qualities[quality].name,
-                            color: qualities[quality].color
-                        });
-                    }
+        for (const qualId of qualitiesIds) {
+            for (const quality of qualities) {
+                if (quality._id === qualId) {
+                    qualitiesArray.push(quality);
+                    break;
                 }
             }
         }
-
         return qualitiesArray;
-    };
+    }
     const transformData = (data) => {
-        console.log(data);
-        const newArray = [];
-
-        data.map((qual) => newArray.push(qual.value));
-
-        return newArray;
+        const result = getQualitiesListByIds(data).map((qual) => ({
+            label: qual.name,
+            value: qual._id
+        }));
+        return result;
     };
-
-    const handleSubmit = (e) => {
+    useEffect(() => {
+        if (!professionLoading && !qualitiesLoading && currentUser && !data) {
+            setData({
+                ...currentUser,
+                qualities: transformData(currentUser.qualities)
+            });
+        }
+    }, [professionLoading, qualitiesLoading, currentUser, data]);
+    useEffect(() => {
+        if (data && isLoading) {
+            setIsLoading(false);
+        }
+    }, [data]);
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const isValid = validate();
         if (!isValid) return;
-
-        updateUser(data);
+        await updateUserData({
+            ...data,
+            qualities: data.qualities.map((q) => q.value)
+        });
+        history.push(`/users/${currentUser._id}`);
     };
 
     const validatorConfig = {
@@ -100,14 +97,6 @@ const EditUserPage = () => {
         setData((prevState) => ({
             ...prevState,
             [target.name]: target.value
-        }));
-    };
-    const handleChangeQual = (target) => {
-        setData((prevState) => ({
-            ...prevState,
-            [target.name]: target.value.map((q) => {
-                return q.value;
-            })
         }));
     };
 
@@ -160,9 +149,9 @@ const EditUserPage = () => {
                                 label="Выберите ваш пол"
                             />
                             <MultiSelectField
-                                defaultValue={getQualities(data.qualities)}
+                                defaultValue={data.qualities}
                                 options={qualitiesList}
-                                onChange={handleChangeQual}
+                                onChange={handleChange}
                                 name="qualities"
                                 label="Выберите ваши качества"
                             />
