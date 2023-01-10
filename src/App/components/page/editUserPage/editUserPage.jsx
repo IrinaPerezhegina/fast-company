@@ -6,21 +6,27 @@ import SelectField from "../../common/form/selectField";
 import RadioField from "../../common/form/radioField";
 import MultiSelectField from "../../common/form/multiSelectField";
 import BackHistoryButton from "../../common/backButton";
-import { useProfessions } from "../../../hooks/useProfession";
-import { useQualities } from "../../../hooks/useQuality";
 import { useAuth } from "../../../hooks/useAuth";
+import { useSelector } from "react-redux";
+import {
+    getQualities,
+    getQualitiesLoadingStatus
+} from "../../../store/qualities";
+import {
+    getProfessions,
+    getProfessionsLoadingStatus
+} from "../../../store/professions";
 
 const EditUserPage = () => {
     const history = useHistory();
     const [isLoading, setIsLoading] = useState(true);
-
     const { currentUser, updateUserData } = useAuth();
-
     const [data, setData] = useState();
-    const { professions, isLoading: professionLoading } = useProfessions();
-    const { qualities, isLoading: qualitiesLoading } = useQualities();
+    const professions = useSelector(getProfessions());
+    const professionLoading = useSelector(getProfessionsLoadingStatus());
+    const qualities = useSelector(getQualities());
+    const qualitiesLoading = useSelector(getQualitiesLoadingStatus());
     const [errors, setErrors] = useState({});
-
     const professionsList = Object.keys(professions).map((professionName) => ({
         label: professions[professionName].name,
         value: professions[professionName]._id
