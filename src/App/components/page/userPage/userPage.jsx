@@ -1,18 +1,16 @@
-import React, { useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import QualitiesCard from "../../ui/qualitiesCard";
 import MeetingsCard from "../../ui/meetingsCard";
 import UserCard from "../../ui/userCard";
 import Comments from "../../ui/comments.jsx";
-import { useUser } from "../../../hooks/useUsers";
 import { CommentsProvider } from "../../../hooks/useComments";
+import { useSelector } from "react-redux";
+import { getUserById } from "../../../store/users";
 
 const UserPage = ({ userId }) => {
-    const { getUserById } = useUser();
-    const user = getUserById(userId);
-    useEffect(() => {
-        getUserById(userId);
-    }, [user]);
+    const user = useSelector(getUserById(userId));
+    console.log(user);
     if (user) {
         return (
             <div className="container">
