@@ -25,7 +25,8 @@ if (process.env.NODE_ENV === "production") {
   app.use("/", express.static(path.join(__dirname, "client")));
   const indexPath = path.join(__dirname, "client", "index.html");
   app.get("*", (req, res) => {
-    res.send(indexPath);
+    // res.send(indexPath);
+    res.json({ hello: "hi" });
   });
 }
 
