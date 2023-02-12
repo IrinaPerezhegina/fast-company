@@ -3,7 +3,6 @@ import authService from "../service/auth.service";
 import localStorageService from "../service/localStorage.service";
 import userService from "../service/user.service";
 import { generateAuthError } from "../utils/generateAuthError";
-import { randomInt } from "../utils/getRandomInt";
 import history from "../utils/history";
 
 const initialState = localStorageService.getAccessToken()
@@ -81,14 +80,11 @@ const {
     usersRequestFiled,
     authRequestSuccess,
     authRequestFailed,
-    userCreated,
     userLoggedOut,
     update
 } = actions;
 
 const authRequested = createAction("users/authRequested");
-const userCreateRequested = createAction("users/userCreateRequested");
-const createUserFailed = createAction("users/createUserFailed");
 const updateRequested = createAction("users/updateRequested");
 const updateFailed = createAction("users/updateFailed");
 
@@ -115,8 +111,9 @@ export const login =
         dispatch(authRequested());
         try {
             const data = await authService.login({ email, password });
-            dispatch(authRequestSuccess({ userId: data.localId }));
             localStorageService.setTokens(data);
+            dispatch(authRequestSuccess({ userId: data.userId }));
+
             history.push(redirect);
         } catch (error) {
             const { code, message } = error.response.data.error;
@@ -129,43 +126,18 @@ export const login =
         }
     };
 
-const createUser = (payload) => async (dispatch) => {
-    dispatch(userCreateRequested());
+export const signUp = (payload) => async (dispatch) => {
+    dispatch(authRequested());
     try {
-        const { content } = await userService.create(payload);
-        dispatch(userCreated(content));
+        const data = await authService.register(payload);
+        localStorageService.setTokens(data);
+        dispatch(authRequestSuccess({ userId: data.userId }));
+
         history.push("/users");
     } catch (error) {
-        dispatch(createUserFailed(error.message));
+        dispatch(authRequestFailed(error.message));
     }
 };
-
-export const signUp =
-    ({ email, password, ...rest }) =>
-    async (dispatch) => {
-        dispatch(authRequested());
-        try {
-            const data = await authService.register({ email, password });
-            localStorageService.setTokens(data);
-            dispatch(authRequestSuccess({ userId: data.localId }));
-            dispatch(
-                createUser({
-                    _id: data.localId,
-                    email,
-                    rate: randomInt(1, 5),
-                    completedMeetings: randomInt(0, 200),
-                    img: `https://avatars.dicebear.com/api/avataaars/${(
-                        Math.random() + 1
-                    )
-                        .toString(36)
-                        .substring(7)}.svg`,
-                    ...rest
-                })
-            );
-        } catch (error) {
-            dispatch(authRequestFailed(error.message));
-        }
-    };
 
 export const loadUsersList = () => async (dispatch) => {
     dispatch(usersRequested());

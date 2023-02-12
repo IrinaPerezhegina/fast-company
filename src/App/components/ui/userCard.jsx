@@ -6,6 +6,7 @@ import { getCurrentUserData } from "../../store/users";
 
 const UserCard = ({ user }) => {
     const currentUser = useSelector(getCurrentUserData());
+
     const history = useHistory();
     const handleClick = () => {
         history.push(history.location.pathname + "/edit");
@@ -13,7 +14,7 @@ const UserCard = ({ user }) => {
     return (
         <div className="card mb-3">
             <div className="card-body">
-                {currentUser._id === user._id && (
+                {currentUser?._id === user._id && (
                     <button
                         onClick={handleClick}
                         className="
@@ -37,7 +38,7 @@ const UserCard = ({ user }) => {
         "
                 >
                     <img
-                        src={user.img}
+                        src={user.image}
                         className="rounded-circle shadow-1-strong me-3"
                         alt="avatar"
                         width="65"

@@ -23,3 +23,5 @@ root.render(
 );
 
 reportWebVitals();
+// "homepage": "https://IrinaPerezhegina.github.io/fast-company",
+// "name": "fast-company",

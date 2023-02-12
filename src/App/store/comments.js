@@ -55,11 +55,11 @@ const createCommentRequested = createAction("comments/createCommentRequested");
 const removeCommentRequested = createAction("comments/removeCommentRequested");
 
 export const removeComment = (id) => async (dispatch) => {
-    console.log(id);
     dispatch(removeCommentRequested());
     try {
         const { content } = await commentService.removeComment(id);
-        if (content === null) {
+
+        if (!content) {
             dispatch(removeCommentsReseved(id));
         }
     } catch (error) {
@@ -67,10 +67,11 @@ export const removeComment = (id) => async (dispatch) => {
     }
 };
 
-export const createComment = (comment) => async (dispatch) => {
+export const createComment = (payload) => async (dispatch) => {
     dispatch(createCommentRequested());
     try {
-        const { content } = await commentService.createComment(comment);
+        const { content } = await commentService.createComment(payload);
+        console.log(content);
         dispatch(createCommentsRecived(content));
     } catch (error) {
         dispatch(createCommentsRequestFiled(error.message));

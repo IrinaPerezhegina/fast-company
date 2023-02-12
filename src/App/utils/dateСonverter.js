@@ -1,24 +1,30 @@
-export function dateСonverter(date) {
-    const count = Date.now();
-    if ((count - Number(date)) / 60000 <= 1) {
-        return "1 минуту назад";
-    } else if ((count - Number(date)) / 60000 <= 5) {
-        return "5 минут назад";
-    } else if ((count - Number(date)) / 60000 <= 10) {
-        return "10 минут назад";
-    } else if ((count - Number(date)) / 60000 <= 30) {
-        return "30 минут назад";
-    } else if ((count - Number(date)) / 86400000 <= 1) {
-        return `${new Date(Number(date)).getHours()}:${new Date(
-            Number(date)
-        ).getMinutes()}`;
-    } else if ((count - Number(date)) / 31536000000 <= 1) {
-        return `${new Date(Number(date)).getDay()}.${
-            new Date(1633576399367).getMonth() + 1
-        }`;
-    } else {
-        return `${new Date(Number(date)).getDay()}.${
-            new Date(Number(date)).getMonth() + 1
-        }.${new Date(Number(date)).getFullYear()}`;
+export function dateСonverter(data) {
+    const date = new Date(data);
+    const dateNow = new Date();
+    const yearDif = dateNow.getFullYear() - date.getFullYear();
+    if (yearDif === 0) {
+        const dayDif = dateNow.getDate() - date.getDate();
+        if (dayDif === 0) {
+            const hourDif = dateNow.getHours() - date.getHours();
+            if (hourDif === 0) {
+                const minutesDif = dateNow.getMinutes() - date.getMinutes();
+
+                if (minutesDif >= 0 && minutesDif < 5) return "1 минуту назад";
+                if (minutesDif >= 5 && minutesDif < 10) return "5 минут назад";
+                if (minutesDif >= 10 && minutesDif < 30) {
+                    return "10 минут назад";
+                }
+                return "30 минут назад";
+            }
+            return `${date.getHours()}:${date.getMinutes()}`;
+        }
+
+        return date.toLocaleString("default", {
+            month: "long",
+            day: "numeric"
+        });
     }
+    return (
+        date.getFullYear() + "." + (date.getMonth() + 1) + "_" + date.getDate()
+    );
 }

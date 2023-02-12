@@ -20,7 +20,7 @@ const Comment = ({
                 <div className="col">
                     <div className="d-flex flex-start ">
                         <img
-                            src={user.img}
+                            src={user.image}
                             className="rounded-circle shadow-1-strong me-3"
                             alt="avatar"
                             width="65"
