@@ -27,7 +27,6 @@ const UsersListPage = () => {
         // setUsers((prevState) =>
         //     prevState.filter((line) => line._id !== userId)
         // );
-        console.log(userId);
     };
     const handleToggleBookMark = (id) => {
         const newArray = users.map((user) => {

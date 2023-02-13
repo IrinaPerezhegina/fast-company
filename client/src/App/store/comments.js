@@ -71,7 +71,7 @@ export const createComment = (payload) => async (dispatch) => {
     dispatch(createCommentRequested());
     try {
         const { content } = await commentService.createComment(payload);
-        console.log(content);
+
         dispatch(createCommentsRecived(content));
     } catch (error) {
         dispatch(createCommentsRequestFiled(error.message));
