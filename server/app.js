@@ -16,11 +16,7 @@ app.use("/api", routes);
 
 mongoose.set("strictQuery", true);
 const PORT = process.env.PORT || 8080;
-// if (process.env.NODE_ENV === "production") {
-//   console.log("production");
-// } else {
-//   console.log("development");
-// }
+
 if (process.env.NODE_ENV === "production") {
   app.use("/", express.static(path.join(__dirname, "client")));
   const indexPath = path.join(__dirname, "client", "index.html");
