@@ -14,8 +14,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 app.use("/api", routes);
 
-// mongoose.set("strictQuery", true);
-const PORT = config.get("port") ?? 8080;
+mongoose.set("strictQuery", true);
+const PORT = process.env.PORT || 8080;
 // if (process.env.NODE_ENV === "production") {
 //   console.log("production");
 // } else {
@@ -25,7 +25,7 @@ if (process.env.NODE_ENV === "production") {
   app.use("/", express.static(path.join(__dirname, "client")));
   const indexPath = path.join(__dirname, "client", "index.html");
   app.get("*", (req, res) => {
-    // res.send(indexPath);
+    res.send(indexPath);
     res.json({ hello: "hi" });
   });
 }
@@ -35,7 +35,7 @@ async function start() {
     mongoose.connection.once("open", () => {
       initDatabase();
     });
-    await mongoose.connect(config.get("mongoUri"));
+    await mongoose.connect(process.env.MONGO_URI);
     app.listen(PORT, () => {
       console.log(chalk.green(`Server has been started on port ${PORT}...`));
     });
